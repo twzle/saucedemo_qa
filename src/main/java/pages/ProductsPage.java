@@ -2,7 +2,15 @@ package pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
+
+import java.util.Collections;
+import java.util.List;
+
+import static java.lang.Double.MAX_VALUE;
+import static java.lang.Double.MIN_VALUE;
+import static utils.Converter.getPrice;
 
 public class ProductsPage {
 
@@ -11,6 +19,8 @@ public class ProductsPage {
     String addToCartButton = "//div[text()='%s']/ancestor::div[@class = 'inventory_item']//button";
     By cartButton = By.id("shopping_cart_container");
     By sortMenu = By.xpath("//select[@class = 'product_sort_container']");
+    By inventoryItemNames = By.xpath("//div[@class = 'inventory_item_name']");
+    String inventoryItemPrice = "//div[text()='%s']/ancestor::div[@class = 'inventory_item']//div[@class='inventory_item_price']";
     public ProductsPage(WebDriver driver) {
         this.driver = driver;
     }
@@ -32,7 +42,29 @@ public class ProductsPage {
 
     public ProductsPage selectSort(String sort) {
         Select select = new Select(driver.findElement(sortMenu));
-        select.selectByVisibleText(sort);
+        select.selectByValue(sort);
         return this;
+    }
+
+    public Boolean isInventoryListSorted(String order) {
+        List<WebElement> listOfInventoryItemNames = driver.findElements(inventoryItemNames);
+        Double previousItemPrice;
+        if (order == "ASC"){
+            previousItemPrice = MIN_VALUE;
+        } else if (order == "DESC") {
+            previousItemPrice = MAX_VALUE;
+        } else {
+            return false;
+        }
+        for (WebElement itemName : listOfInventoryItemNames) {
+            String itemNameText = itemName.getText();
+            String itemPriceText = driver.findElement(By.xpath(String.format(inventoryItemPrice, itemNameText))).getText();
+            Double itemPrice = getPrice(itemPriceText);
+            if ((order == "ASC" && previousItemPrice > itemPrice) || (order == "DESC" && previousItemPrice < itemPrice)) {
+                return false;
+            }
+            previousItemPrice = itemPrice;
+        }
+        return true;
     }
 }
