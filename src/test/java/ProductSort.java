@@ -4,22 +4,22 @@ import org.testng.annotations.Test;
 public class ProductSort extends BaseTest {
 
     @Test
-    public void testAscendingInventoryItemsSort() {
+    public void testAscendingProductListSort() {
         loginPage.open()
                 .login("standard_user", "secret_sauce")
                 .isPageOpened()
-                .selectSort("lohi");
+                .selectSort("Price (low to high)");
 
-        Assert.assertTrue(productsPage.isInventoryListSorted("ASC"));
+        Assert.assertTrue(productsPage.isProductListSorted("ASC"));
     }
 
     @Test
-    public void testDescendingInventoryItemsSort() {
+    public void testDescendingProductListSort() {
         loginPage.open()
                 .login("standard_user", "secret_sauce")
                 .isPageOpened()
-                .selectSort("hilo");
+                .selectSort("Price (high to low)");
 
-        Assert.assertTrue(productsPage.isInventoryListSorted("DESC"));
+        Assert.assertTrue(productsPage.isProductListSorted("DESC"));
     }
 }

@@ -42,11 +42,11 @@ public class ProductsPage {
 
     public ProductsPage selectSort(String sort) {
         Select select = new Select(driver.findElement(sortMenu));
-        select.selectByValue(sort);
+        select.selectByVisibleText(sort);
         return this;
     }
 
-    public Boolean isInventoryListSorted(String order) {
+    public Boolean isProductListSorted(String order) {
         List<WebElement> listOfInventoryItemNames = driver.findElements(inventoryItemNames);
         Double previousItemPrice;
         if (order == "ASC"){
